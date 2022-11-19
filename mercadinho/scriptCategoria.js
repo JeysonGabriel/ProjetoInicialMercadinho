@@ -5,10 +5,15 @@ document.querySelector('#btn-adicionar').addEventListener('click',() => {
 
 lerDados();
 
-
 function lerDados() {
     fetch('http://localhost/mercadinho/backend.php?acao=listarCategoria')
-    .then((response) => response.json())
+    .then((response) => {
+        if (response.status != 200){
+            throw new Error('Não autorizado');
+        } else {
+            return response.json();
+        }
+    })
     .then((data) => {
         let html = '';
         data.forEach(categoria => {
@@ -17,6 +22,9 @@ function lerDados() {
             <button type='button' class='btn btn-danger' onclick='editarCategoria(${categoria.id})'>editar</button></td></tr>`;
         });
         document.querySelector('#tabela > tbody').innerHTML = html;
+    })
+    .catch(error => {
+        alert(error.message);
     });
 }
 
@@ -75,7 +83,7 @@ function excluirCategoria(id) {
         if (data.sucesso) {
             lerDados();
         } else {
-            alert('deu ruim');
+            alert('Não é possivel excluir essa categoria. Verifique se ela está vinculada a um produto.');
         }
     });
 

@@ -1,60 +1,48 @@
 
 document.querySelector('#btn-adicionar').addEventListener('click',() => {
-    inserirProduto();
+    inserirUsuario();
 });
 
-lerDados();
-lerCategoria();
+listarUsuarios();
 
 
-function lerDados() {
-    fetch('http://localhost/mercadinho/backend.php?acao=listarProdutos')
+function listarUsuarios() {
+    fetch('http://localhost/mercadinho/backend.php?acao=listarUsuarios')
     .then((response) => response.json())
-    
     .then((data) => {
         let html = '';
-        data.forEach(produto => {
-            html+= `<tr><td>${produto.id}</td><td>${produto.nome}</td><td>${produto.preco}</td><td>${produto.nome_categoria}</td>
-            <td><button type='button' class='btn btn-danger' onclick='excluirProduto(${produto.id})'>excluir</button>
-            <button type='button' class='btn btn-danger' onclick='editarProduto(${produto.id})'>editar</button></td></tr>`;
+        data.forEach(usuario => {
+            html+= `<tr>
+            <td>${usuario.id}</td>
+            <td>${usuario.nome}</td>
+            <td>${usuario.cargo}</td>
+            <button type='button' class='btn btn-danger' onclick='editarUsuario(${usuario.id})'>Editar</button>
+            <button type='button' class='btn btn-danger' onclick='excluirUsuario(${usuario.id})'>Excluir</button>
+        </tr>`;
         });
         document.querySelector('#tabela > tbody').innerHTML = html;
     });
 }
 
-function lerCategoria() {
-    fetch('http://localhost/mercadinho/backend.php?acao=listarCategoria')
-    .then((response) => response.json())
-    .then((data) => {
-        let html = '';
-        data.forEach(categoria => {
-            html+= `<option value='${categoria.id}'>${categoria.nome}</option>`;
-        });
-        document.querySelector('#categoria').innerHTML = html;
-    });
-}
 
-
-function inserirProduto() {
-    let produto = {
+function inserirUsuario() {
+    let usuario = {
         nome: document.querySelector('#nome').value,
-        preco: document.querySelector('#preco').value,
-        categoria: document.querySelector('#categoria').value
+        cargo: document.querySelector('#cargo').value,
     };
-    console.log(produto);
+    console.log(usuario);
     
-    fetch('http://localhost/mercadinho/backend.php?acao=inserirProduto', {
+    fetch('http://localhost/mercadinho/backend.php?acao=inserirUsuario', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(produto)
+        body: JSON.stringify(usuario)
     })
     .then((response) => response.json())
     .then((resultado) => {
         if (resultado.sucesso) {
-            lerDados();
-            lerCategoria();
+            listarUsuarios();
         } else {
             alert('impossivel inserir');
         }
@@ -95,7 +83,7 @@ function excluirProduto(id) {
             lerDados();
 
         } else {
-            alert('deu ruimmmm');
+            alert('deu ruim');
         }
     });
 

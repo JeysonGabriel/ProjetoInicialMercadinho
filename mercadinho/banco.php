@@ -21,8 +21,9 @@ function inserirCategoria($nome){
 
 function excluirCategoria($id) {
     $sql = "delete from categoria where id = $id";
-    $resultado = pg_query(obterConexao(), $sql);
-    return ['sucesso' => pg_affected_rows($resultado) > 0];
+    $resultado = @pg_query(obterConexao(), $sql);
+    
+    return ['sucesso' => $resultado && pg_affected_rows($resultado) > 0];
 }
 
 function editarCategoria($id, $nome) {
@@ -64,6 +65,18 @@ function editarProduto($id, $nome, $preco, $categoria) {
     where id = $id;";
      $resultado = pg_query(obterConexao(), $sql);
      return ['sucesso' => pg_affected_rows($resultado) > 0];
+}
+
+function listarUsuarios(){
+    $sql ="select * from usuarios order by id;";
+    $resultado = pg_query(obterConexao(), $sql);
+    return ['sucesso' => pg_affected_rows($resultado) > 0];
+}
+
+function verificar($login, $senha){
+    $sql = "select * from usuarios where login = '$login' and senha = md5('$senha')";
+    $resultado = pg_query(obterConexao(), $sql);
+    return['sucesso' => pg_affected_rows($resultado) > 0];
 }
 
 
